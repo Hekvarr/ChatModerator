@@ -7,6 +7,7 @@ public class UserModerationService(IContentModerationService contentModerationSe
 {
     public async Task ProcessMessage(Message message)
     {
+        if (string.IsNullOrEmpty(message.Content)) return;
         var messageIsOffensive = await contentModerationService.IsOffensive(message.Content);
         if (messageIsOffensive) await userService.BanTemporarily(message.UserId, DateTime.Now.AddHours(1));
     }
