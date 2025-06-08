@@ -7,4 +7,5 @@ public class User
     public bool IsBanedForever { get; set; }
     public bool IsTemporarilyBaned { get; set; }
     public DateTime? BanedUntil { get; set; }
+    public List<Message> Messages { get; set; }
 }
