@@ -12,6 +12,8 @@ public class UserService(IUserRepository repository) : IUserService
         if (user.IsBannedForever)
             throw new UserAlreadyBannedException("User is already banned and cannot be banned again.");
         user.IsBannedForever = true;
+        user.IsTemporarilyBanned = false;
+        user.BannedUntil = null;
         await repository.Update(user);
     }
 
