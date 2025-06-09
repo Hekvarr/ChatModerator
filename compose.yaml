@@ -1,0 +1,41 @@
+﻿services:
+  rehabilitatefunction:
+    image: rehabilitatefunction
+    build:
+      context: .
+      dockerfile: RehabilitateFunction/Dockerfile
+
+  moderationfunction:
+    image: moderationfunction
+    build:
+      context: .
+      dockerfile: ModerationFunction/Dockerfile
+
+  banuserfunction:
+    image: banuserfunction
+    build:
+      context: .
+      dockerfile: BanUserFunction/Dockerfile
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    env_file:
+      - .env
+
+  postgresql:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+volumes:
+  rabbitmq_data:
+  postgres_data:
