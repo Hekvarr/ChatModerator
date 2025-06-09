@@ -1,17 +1,25 @@
 ﻿using Core.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core.Data.Repositories;
 
-public class UserRepository(ApplicationDbContext applicationDbContext) : IUserRepository
+public class UserRepository(ApplicationDbContext context) : IUserRepository
 {
     public async Task<User?> GetById(int id)
     {
-        return await applicationDbContext.Users.FindAsync(id);
+        return await context.Users.FindAsync(id);
     }
 
     public async Task Update(User user)
     {
-        applicationDbContext.Users.Update(user);
-        await applicationDbContext.SaveChangesAsync();
+        context.Users.Update(user);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task<List<User>> GetTemporaryBannedUsers()
+    {
+        return await context.Users
+            .Where(u => u.IsTemporarilyBanned)
+            .ToListAsync();
     }
 }

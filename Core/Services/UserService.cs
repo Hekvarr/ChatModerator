@@ -32,16 +32,14 @@ public class UserService(IUserRepository repository) : IUserService
         await repository.Update(user);
     }
 
-    public async Task LiftTemporarilyBan(int userId)
+    public async Task LiftTemporaryBans()
     {
-        var user = await repository.GetById(userId);
-        if (user == null) throw new UserNotFoundException("User with the specified ID was not found.");
-        if (user.IsBannedForever)
-            throw new UserPermanentlyBannedException("Cannot lift temporary ban: user is permanently banned.");
-        if (!user.IsTemporarilyBanned)
-            throw new UserNotTemporarilyBannedException("User is not temporarily banned.");
-        user.IsTemporarilyBanned = false;
-        user.BannedUntil = null;
-        await repository.Update(user);
+        var temporaryBannedUsers = await repository.GetTemporaryBannedUsers();
+        foreach (var user in temporaryBannedUsers.Where(user => user.BannedUntil < DateTime.UtcNow))
+        {
+            user.IsTemporarilyBanned = false;
+            user.BannedUntil = null;
+            await repository.Update(user);
+        }
     }
 }
