@@ -9,6 +9,6 @@ public class UserModerationService(IContentModerationService contentModerationSe
     {
         if (string.IsNullOrEmpty(message.Content)) return;
         var messageIsOffensive = await contentModerationService.IsOffensive(message.Content);
-        if (messageIsOffensive) await userService.BanTemporarily(message.UserId, DateTime.Now.AddHours(1));
+        if (messageIsOffensive) await userService.BanTemporarily(message.UserId, DateTime.UtcNow.AddHours(1));
     }
 }
